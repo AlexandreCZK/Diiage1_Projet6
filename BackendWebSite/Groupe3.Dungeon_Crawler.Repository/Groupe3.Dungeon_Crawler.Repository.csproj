@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.11.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Groupe3.Dungeon_Crawler.Entity\Groupe3.Dungeon_Crawler.Entity.csproj" />
+    <ProjectReference Include="..\Groupe3.Dungeon_Crawler.Repository.Contracts\Groupe3.Dungeon_Crawler.Repository.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

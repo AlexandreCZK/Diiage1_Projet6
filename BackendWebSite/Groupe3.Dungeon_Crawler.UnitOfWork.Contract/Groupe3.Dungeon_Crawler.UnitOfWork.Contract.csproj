@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Groupe3.Dungeon_Crawler.Entity\Groupe3.Dungeon_Crawler.Entity.csproj" />
+    <ProjectReference Include="..\Groupe3.Dungeon_Crawler.Repository.Contracts\Groupe3.Dungeon_Crawler.Repository.Contracts.csproj" />
+    <ProjectReference Include="..\Groupe3.Dungeon_Crawler.Repository\Groupe3.Dungeon_Crawler.Repository.csproj" />
+    <ProjectReference Include="..\Groupe3.Dungeon_Crrawler.Services\Groupe3.Dungeon_Crrawler.Services.csproj" />
+  </ItemGroup>
+
+</Project>

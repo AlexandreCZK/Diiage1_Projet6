@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Groupe3.Dungeon_Crawler.Repository\Groupe3.Dungeon_Crawler.Repository.csproj" />
+    <ProjectReference Include="..\Groupe3.Dungeon_Crawler.UnitOfWork.Contract\Groupe3.Dungeon_Crawler.UnitOfWork.Contract.csproj" />
+  </ItemGroup>
+
+</Project>

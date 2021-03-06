@@ -1,0 +1,61 @@
+name : Docker-Front
+trigger:
+  branches:
+    include:
+      - develop
+pool:
+  vmImage: 'ubuntu-latest'
+variables:
+  ImageName: 'kaillin/projet6g3:frontendwebdev'
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build and push Docker image
+    steps:
+    - task: Docker@1
+      displayName: 'Build the Docker image'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Build an image'
+        dockerFile: 'Dockerfile'
+        imageName: '$(ImageName)'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '.'
+    - task: Docker@1
+      displayName: 'Push the Docker image to Dockerhub'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Push an image'
+        imageName: '$(ImageName)'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    - task: NodeTool@0
+      displayName: 'Use Node 14.15.0'
+      inputs:
+        versionSpec: 14.15.0
+    - task: Npm@1
+      displayName: 'npm install'
+      inputs:
+        verbose: false
+    - task: Npm@1
+      displayName: 'npm build'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'run build'
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'SonarCloud'
+        organization: 'jacquetmickael'
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: 'DI1P6_StaticWebSite'
+        cliProjectName: 'StaticWebSite'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'

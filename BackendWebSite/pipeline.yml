@@ -1,0 +1,74 @@
+name : Docker-Back
+trigger:
+  branches:
+    include:
+      - develop
+pool:
+  vmImage: 'ubuntu-latest'
+variables:
+  ImageName: 'kaillin/projet6g3:backendwebdev'
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build and push Docker image
+    steps:
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'SonarCloud'
+        organization: 'jacquetmickael'
+        scannerMode: 'MSBuild'
+        projectKey: 'DI1P6_BackendWebSite'
+        projectName: 'BackendWebSite' 
+    - task: Docker@1
+      displayName: 'Build the Docker image'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Build an image'
+        dockerFile: 'Dockerfile'
+        imageName: '$(ImageName)'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '.'
+
+    - task: Docker@1
+      displayName: 'Push the Docker image to Dockerhub'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Push an image'
+        imageName: '$(ImageName)'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(BuildConfiguration)'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
+    
+    - task: UseDotNet@2
+      inputs:
+        version: '5.0.100'
+    - task: DotNetCoreCLI@2
+      displayName: Install dotnet-ef
+      inputs:
+        command: 'custom'
+        custom: 'tool'
+        arguments: 'install --global dotnet-ef'
+    - task: DotNetCoreCLI@2
+      displayName: SQL script generation
+      inputs:
+        command: 'custom'
+        custom: 'ef'
+        arguments: 'migrations script --output $(Build.ArtifactStagingDirectory)/migration.sql --context DungeonCrawlerDbContextSql  --idempotent'
+        workingDirectory: 'Groupe3.Dungeon_Crawler.WebApplication'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/migration.sql'
+        artifact: 'migration'
+        publishLocation: 'pipeline'
